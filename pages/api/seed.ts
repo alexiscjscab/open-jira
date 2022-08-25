@@ -1,5 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { db } from '../../database'
+import { seedData } from '../../database/seed-data'
+import { Entry } from '../../models'
 
 type Data = {
     message: string
@@ -14,19 +16,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     }
 
     await db.connect()
-
-
+    await Entry.deleteMany();
+    await Entry.insertMany(seedData.entries);
 
     await db.disconnect()
 
     res.status(200).json({ message: 'Proceso Realizado correctamente' })
 }
-
-/*
-    Config ENV
-
-    MONGO_DB_URL=mongodb+srv://alexis:alexis09@open-jira-db.rlued81.mongodb.net/?retryWrites=true&w=majority
-
-    NEXT_PUBLIC_CLIENT_KEY=ASDSDA323
-
-*/
